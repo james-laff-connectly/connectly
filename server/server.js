@@ -2,6 +2,8 @@ const path = require('path');
 const express = require('express');
 require('dotenv').config();
 
+const webhookRouter = require('./routes/webhookRouter');
+
 const app = express();
 const port = process.env.PORT || 3000;
 
@@ -13,6 +15,8 @@ if(process.env.NODE_ENV === 'production'){
     return res.status(200).sendFile(path.join(__dirname, '../dist/index.html'));
   });
 }
+
+app.use('/webhook', webhookRouter);
 
 app.use((req, res) => res.status(404).send('Page not found.'));
 
