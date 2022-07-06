@@ -1,0 +1,24 @@
+@import './variables.scss';
+
+html {
+  font-size: 62.5%;
+  font-family: 'Verdana', sans-serif;
+  color: $primary-black;
+  line-height: 1.6;
+}
+
+h1 {
+  font-size: $font-size--large;
+  text-align: center;
+}
+
+.dashboard {
+  margin: 0 auto;
+  height: 500px;
+  max-width: 1400px;
+  font-size: $font-size--default;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
