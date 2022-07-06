@@ -2,12 +2,14 @@ const path = require('path');
 const express = require('express');
 require('dotenv').config();
 
-const webhookRouter = require('./routes/webhookRouter');
+const facebookRouter = require('./routes/facebookRouter');
+
+const businessController = require('./controllers/businessController');
 
 const app = express();
 const port = process.env.PORT || 3000;
 
-app.use(express.json());
+// app.use(express.json());
 
 if(process.env.NODE_ENV === 'production'){
   app.use(express.static(path.join(__dirname, '../dist')));
@@ -16,7 +18,11 @@ if(process.env.NODE_ENV === 'production'){
   });
 }
 
-app.use('/webhook', webhookRouter);
+app.use('/facebook', facebookRouter);
+
+app.post('/business', express.json(), businessController.requestFeedback, (req, res) => {
+  return res.status(200).send('EVENT_RECEIVED');
+});
 
 app.use((req, res) => res.status(404).send('Page not found.'));
 
