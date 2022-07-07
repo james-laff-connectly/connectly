@@ -15,7 +15,7 @@ if(process.env.NODE_ENV === 'production'){
     res.set('Content-Type', 'application/javascript; charset=UTF-8');
     next();
   });
-  app.use('/dist', express.static(path.resolve(__dirname, '../dist')));
+  app.use('/', express.static(path.resolve(__dirname, '../dist')));
   app.get('/', (req, res) => {
     return res.status(200).sendFile(path.resolve(__dirname, '../dist/index.html'));
   });

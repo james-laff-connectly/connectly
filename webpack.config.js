@@ -8,7 +8,6 @@ const config = {
   entry: './client/index.js',
   output: {
     path: path.resolve(__dirname, 'dist'),
-    publicPath: '/dist',
     filename: 'bundle.js'
   },
   devtool: 'eval-source-map',
@@ -55,15 +54,20 @@ const config = {
     new HtmlWebpackPlugin({
       template: './client/index.html',
     }),
-    new MiniCssExtractPlugin(),
-    new BrotliPlugin({
-      asset: '[path].br[query]',
-      test: /\.js$/,
-    })
+    new MiniCssExtractPlugin()
   ],
   resolve: {
     extensions: ['.js', '.jsx'],
   }
 };
+
+if (process.env.NODE_ENV == 'production') {
+  config.plugins.push(
+    new BrotliPlugin({
+      asset: '[path].br[query]',
+      test: /\.js$/,
+    })
+  );
+}
 
 module.exports = config;
