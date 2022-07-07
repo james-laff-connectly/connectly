@@ -72,7 +72,7 @@ respond.handleMessaging = function(userProfile, webhookEvent) {
     const score = messageFeedback[feedbackId].payload;
     const body = messageFeedback[feedbackId].follow_up.payload;
     
-    const addReviewQuery = 'INSERT INTO review (customer_psid, business_id, review_type_id, score, body) VALUES ($1, $2, $3, $4, $5)';
+    const addReviewQuery = 'INSERT INTO review (customer_psid, business_page_id, review_type_id, score, body) VALUES ($1, $2, $3, $4, $5)';
     const addReviewQueryValues = [userProfile.psid, businessPageId, reviewTypeId, score, body];
     console.log('addReviewQueryValues', addReviewQueryValues);
 

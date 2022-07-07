@@ -8,8 +8,6 @@ const businessRouter = require('./routes/businessRouter');
 const app = express();
 const port = process.env.PORT || 3000;
 
-// app.use(express.json());
-
 if(process.env.NODE_ENV === 'production'){
   app.get('*.js', (req, res, next) => {
     req.url = req.url + '.br';

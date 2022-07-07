@@ -18,7 +18,7 @@ const config = {
     port: 8080,
     static: {
       directory: path.resolve(__dirname, '/dist'),
-      publicPath: '/dist'
+      publicPath: '/'
     },
     hot: true,
     historyApiFallback: true,
