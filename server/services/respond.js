@@ -3,6 +3,24 @@ const db = require('../models/psql');
 
 const respond = {};
 
+const quick_replies = [
+  {
+    content_type: 'text',
+    title: 'Share feedback',
+    payload: 'feedback'
+  },
+  {
+    content_type: 'text',
+    title: 'Speak to an agent',
+    payload: 'agent'
+  },
+  {
+    content_type: 'text',
+    title: 'Get my PSID',
+    payload: 'psid'
+  }
+];
+
 respond.handleMessaging = function(userProfile, webhookEvent) {
   let response;
 
@@ -15,17 +33,20 @@ respond.handleMessaging = function(userProfile, webhookEvent) {
     }
     else if (quickReplyPayload === 'psid') {
       response = {
-        text: `Okay - your PSID is ${userProfile.psid}. Enter it on the dashboard to demo a completed transaction.`
+        text: `Okay - your PSID is ${userProfile.psid}. Enter it on the dashboard to demo a completed transaction.`,
+        quick_replies
       };
     }
     else if (quickReplyPayload === 'agent') {
       response = {
-        text: 'Okay - let me get someone who can help. (Demo ends here.)'
+        text: 'Okay - let me get someone who can help. (Demo ends here.)',
+        quick_replies
       };
     }
     else {
       response = {
-        text: 'Okay. Is there anything else I can do to help?'
+        text: 'Okay. Is there anything else I can do to help?',
+        quick_replies
       };  
     }
   }
@@ -36,23 +57,7 @@ respond.handleMessaging = function(userProfile, webhookEvent) {
     console.log('received message: ', messageText);
     response = {
       text: `Hi ${userProfile.first_name}! How can I help you?`,
-      quick_replies: [
-        {
-          content_type: 'text',
-          title: 'Share feedback',
-          payload: 'feedback'
-        },
-        {
-          content_type: 'text',
-          title: 'Speak to an agent',
-          payload: 'agent'
-        },
-        {
-          content_type: 'text',
-          title: 'Get my PSID',
-          payload: 'psid'
-        }
-      ]
+      quick_replies
     };
   }
   
@@ -108,7 +113,8 @@ respond.handleMessaging = function(userProfile, webhookEvent) {
   // Default fallback response
   else {
     response = {
-      text: `I'm not sure how to respond to that message, ${userProfile.first_name}!`
+      text: `I'm not sure how to respond to that message, ${userProfile.first_name}!`,
+      quick_replies
     };
   } 
   
