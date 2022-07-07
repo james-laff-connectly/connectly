@@ -1,5 +1,6 @@
-import React, { Fragment, useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import Chart from '../components/Chart';
+import PurchaseDemo from '../components/PurchaseDemo';
 
 export default function MainContainer() {
   const [isLoggedIn, setIsLoggedIn] = useState(true);
@@ -8,12 +9,14 @@ export default function MainContainer() {
   const [scores, setScores] = useState([]);
   
   useEffect(() => {
-    if (!isLoggedIn) {
-      fetch(`/business/${id}`)
+    if (isLoggedIn) {
+      fetch(`/business/${id}`, {
+        headers: { 'Content-Type': 'application/json' },
+      })
         .then(res => res.json())
         .then(data => {
           if (!data.err) {
-            setScores(data);
+            setScores(data.scores);
           }
           else console.error(data.err) ;
         });
@@ -23,10 +26,8 @@ export default function MainContainer() {
   return (
     <div className="dashboard">
       <h1>Connectly Dashboard</h1>
-      {isLoggedIn && <Fragment>
-        <Chart data={scores} />
-      </Fragment>
-      }
+      {scores && <Chart scores={scores} />}
+      <PurchaseDemo id={id} />
     </div>
   );
 }

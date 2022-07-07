@@ -20,7 +20,17 @@ const config = {
     },
     hot: true,
     historyApiFallback: true,
-    headers: { 'Access-Control-Allow-Origin': '*' }
+    headers: { 'Access-Control-Allow-Origin': '*' },
+    proxy: {
+      '/facebook/**': {
+        target: 'http://localhost:3000',
+        secure: false
+      },
+      '/business/**': {
+        target: 'http://localhost:3000',
+        secure: false
+      }
+    }
   },
   module: {
     rules: [

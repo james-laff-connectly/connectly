@@ -3,8 +3,7 @@ const express = require('express');
 require('dotenv').config();
 
 const facebookRouter = require('./routes/facebookRouter');
-
-const businessController = require('./controllers/businessController');
+const businessRouter = require('./routes/businessRouter');
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -19,10 +18,7 @@ if(process.env.NODE_ENV === 'production'){
 }
 
 app.use('/facebook', facebookRouter);
-
-app.post('/business', express.json(), businessController.requestFeedback, (req, res) => {
-  return res.status(200).send('EVENT_RECEIVED');
-});
+app.use('/business', businessRouter);
 
 app.use((req, res) => res.status(404).send('Page not found.'));
 

@@ -13,6 +13,11 @@ respond.handleMessaging = function(userProfile, webhookEvent) {
     if (quickReplyPayload === 'feedback') {
       respond.sendFeedbackTemplate(webhookEvent.recipient.id, 1, userProfile.psid);
     }
+    else if (quickReplyPayload === 'psid') {
+      response = {
+        text: `Okay - your PSID is ${userProfile.psid}. Enter it on the dashboard to demo a completed transaction.`
+      };
+    }
     else if (quickReplyPayload === 'agent') {
       response = {
         text: 'Okay - let me get someone who can help. (Demo ends here.)'
@@ -41,6 +46,11 @@ respond.handleMessaging = function(userProfile, webhookEvent) {
           content_type: 'text',
           title: 'Speak to an agent',
           payload: 'agent'
+        },
+        {
+          content_type: 'text',
+          title: 'Get my PSID',
+          payload: 'psid'
         }
       ]
     };
@@ -57,13 +67,13 @@ respond.handleMessaging = function(userProfile, webhookEvent) {
     const messageFeedback = webhookEvent.messaging_feedback.feedback_screens[0].questions;
     console.log('received feedback: ', messageFeedback);
     const feedbackId = Object.keys(messageFeedback)[0];
-    const businessId = feedbackId.split('_')[0];
+    const businessPageId = feedbackId.split('_')[0];
     const reviewTypeId = feedbackId.split('_')[1];
     const score = messageFeedback[feedbackId].payload;
     const body = messageFeedback[feedbackId].follow_up.payload;
     
     const addReviewQuery = 'INSERT INTO review (customer_psid, business_id, review_type_id, score, body) VALUES ($1, $2, $3, $4, $5)';
-    const addReviewQueryValues = [userProfile.psid, businessId, reviewTypeId, score, body];
+    const addReviewQueryValues = [userProfile.psid, businessPageId, reviewTypeId, score, body];
     console.log('addReviewQueryValues', addReviewQueryValues);
 
     db.query(addReviewQuery, addReviewQueryValues);
@@ -136,6 +146,7 @@ respond.callSendAPI = function(senderPsid, response) {
 };
 
 respond.sendFeedbackTemplate = async function(businessPageId, reviewTypeId, customerId) {
+  const feedbackId = `${businessPageId}_${reviewTypeId}`;
   const businessQueryText = 'SELECT _id, name FROM business WHERE page_id = $1';
   let businessQuery;
 
@@ -146,9 +157,7 @@ respond.sendFeedbackTemplate = async function(businessPageId, reviewTypeId, cust
     throw new Error(`businessQuery failed: ${err}`);
   }
   
-  const businessName = businessQuery.rows[0].name;
-  const businessId = businessQuery.rows[0]._id;
-  const feedbackId = `${businessId}_${reviewTypeId}`;
+  const businessName = businessQuery.rows[0].name;  
 
   const message = {
     'attachment': {
