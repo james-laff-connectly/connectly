@@ -11,9 +11,15 @@ const port = process.env.PORT || 3000;
 // app.use(express.json());
 
 if(process.env.NODE_ENV === 'production'){
-  app.use(express.static(path.join(__dirname, '../dist')));
+  app.get('*.js', (req, res, next) => {
+    req.url = req.url + '.br';
+    res.set('Content-Encoding', 'br');
+    res.set('Content-Type', 'application/javascript; charset=UTF-8');
+    next();
+  });
+  app.use('/dist', express.static(path.resolve(__dirname, '../dist')));
   app.get('/', (req, res) => {
-    return res.status(200).sendFile(path.join(__dirname, '../dist/index.html'));
+    return res.status(200).sendFile(path.resolve(__dirname, '../dist/index.html'));
   });
 }
 

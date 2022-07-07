@@ -2,11 +2,13 @@ const webpack = require('webpack');
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const BrotliPlugin = require('brotli-webpack-plugin');
 
 const config = {
   entry: './client/index.js',
   output: {
     path: path.resolve(__dirname, 'dist'),
+    publicPath: '/dist',
     filename: 'bundle.js'
   },
   devtool: 'eval-source-map',
@@ -16,7 +18,7 @@ const config = {
     port: 8080,
     static: {
       directory: path.resolve(__dirname, '/dist'),
-      publicPath: '/'
+      publicPath: '/dist'
     },
     hot: true,
     historyApiFallback: true,
@@ -53,7 +55,11 @@ const config = {
     new HtmlWebpackPlugin({
       template: './client/index.html',
     }),
-    new MiniCssExtractPlugin()
+    new MiniCssExtractPlugin(),
+    new BrotliPlugin({
+      asset: '[path].br[query]',
+      test: /\.js$/,
+    })
   ],
   resolve: {
     extensions: ['.js', '.jsx'],
