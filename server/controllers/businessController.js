@@ -23,6 +23,22 @@ businessController.requestFeedback = async (req, res, next) => {
   }
 };
 
+businessController.updateFeedbackMessage = async (req, res, next) => {
+  const { feedbackMessage, businessPageId } = req.body;
+  const updateFeedbackMessageQueryText = 'UPDATE business SET feedback_message = $1 WHERE page_id = $2';
+  console.log('update', feedbackMessage, businessPageId);
+  try {
+    await db.query(updateFeedbackMessageQueryText, [feedbackMessage, businessPageId]);
+    return next();
+  }
+  catch(err) {
+    return next({
+      log: `businessController.updateFeedbackMessage - updateFeedbackMessageQuery ${err}`,
+      message: { err: 'Feedback message update failed' }
+    });
+  }
+};
+
 businessController.compileFeedback = async (req, res, next) => {
   const { businessPageId } = req.params;
   const compileFeedbackQueryText = 'SELECT score FROM review WHERE business_page_id = $1';

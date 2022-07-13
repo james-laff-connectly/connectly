@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 
 export default function PurchaseDemo({ id }) {
   const [psid, setPsid] = useState('');
+  const [feedbackMessage, setFeedbackMessage] = useState('Would you recommend us to a friend?');
   
   const demoTransaction = () => {
     fetch('/business', {
@@ -12,7 +13,8 @@ export default function PurchaseDemo({ id }) {
       body: JSON.stringify({
         businessPageId: id,
         reviewTypeId: 1,
-        customerId: psid
+        customerId: psid,
+        feedbackMessage
       }),
     });
   };
@@ -28,6 +30,11 @@ export default function PurchaseDemo({ id }) {
         </label>
         <input type='text' id='psid' name='psid' value={psid}
           onChange={(e) => setPsid(e.target.value)} placeholder='123456789' />
+        <label htmlFor='feedback'>
+        Enter your desired feedback message:
+        </label>
+        <input type='text' id='feedback' name='feedback' value={feedbackMessage}
+          onChange={(e) => setFeedbackMessage(e.target.value)} placeholder={feedbackMessage} />
         <button id='transaction' type='button' onClick={demoTransaction}>
           Demo Transaction
         </button>

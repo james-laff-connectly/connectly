@@ -153,9 +153,9 @@ respond.callSendAPI = function(senderPsid, response) {
 
 respond.sendFeedbackTemplate = async function(businessPageId, reviewTypeId, customerId) {
   const feedbackId = `${businessPageId}_${reviewTypeId}`;
-  const businessQueryText = 'SELECT _id, name FROM business WHERE page_id = $1';
+  const businessQueryText = 'SELECT _id, name, feedback_message FROM business WHERE page_id = $1';
   let businessQuery;
-
+  
   try {
     businessQuery = await db.query(businessQueryText, [businessPageId]);
   }
@@ -164,6 +164,7 @@ respond.sendFeedbackTemplate = async function(businessPageId, reviewTypeId, cust
   }
   
   const businessName = businessQuery.rows[0].name;  
+  const feedbackMessage = businessQuery.rows[0].feedback_message;
 
   const message = {
     'attachment': {
@@ -177,7 +178,8 @@ respond.sendFeedbackTemplate = async function(businessPageId, reviewTypeId, cust
           'questions':[{
             'id': feedbackId, // Unique id for question that business sets
             'type': 'nps',
-            'title': `How likely are you to recommend ${businessName} to a friend or colleague?`, // Optional. If business does not define, we show standard text. Standard text based on question type ("csat", "nps", "ces" >>> "text")
+            // 'title': `How likely are you to recommend ${businessName} to a friend or colleague?`, // Optional. If business does not define, we show standard text. Standard text based on question type ("csat", "nps", "ces" >>> "text")
+            title: feedbackMessage,
             'follow_up': // Optional. Inherits the title and id from the previous question on the same page.  Only free-from input is allowed. No other title will show. 
                 {
                   'type': 'free_form', 
@@ -194,7 +196,7 @@ respond.sendFeedbackTemplate = async function(businessPageId, reviewTypeId, cust
     }
   };
 
-  // console.log('message for feedback: ', message.attachment.payload.feedback_screens[0].questions);
+  console.log('message for feedback: ', message.attachment.payload.feedback_screens[0].questions);
 
   const sendFeedback = await fetch(`https://graph.facebook.com/v14.0/me/messages?access_token=${process.env.PAGE_ACCESS_TOKEN}`, {
     method: 'POST',
